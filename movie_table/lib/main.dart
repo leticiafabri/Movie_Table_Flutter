@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/watched_provider.dart';
 
 import 'providers/favorites_provider.dart';
 import 'screens/catalog_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/movie_detail_screen.dart';
 import 'screens/favorites_screen.dart';
+import 'screens/watched_screen.dart';
+import 'screens/home_screen.dart';
 
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => FavoritesProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => FavoritesProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WatchedProvider(),
+        ),
+      ],
       child: const MovieTableApp(),
     ),
   );
@@ -30,8 +40,9 @@ class MovieTableApp extends StatelessWidget {
 
       routes: {
         '/login': (context) => const LoginScreen(),
-        '/catalog': (context) => const CatalogScreen(),
+        '/catalog': (context) => const HomeScreen(),
         '/favorites': (context) => const FavoritesScreen(),
+        '/watched': (context) => const WatchedScreen(),
       },
     );
   }

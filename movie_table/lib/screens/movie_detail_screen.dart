@@ -5,6 +5,7 @@ import '../services/movie_service.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
+import '../providers/watched_provider.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
@@ -220,6 +221,32 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
               height: 1.5,
             ),
           ),
+          const SizedBox(height: 24),
+
+Consumer<WatchedProvider>(
+  builder: (context, watchedProvider, child) {
+    final isWatched = watchedProvider.isWatched(movie.id);
+
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton.icon(
+        onPressed: () {
+          watchedProvider.toggleWatched(movie);
+        },
+        icon: Icon(
+          isWatched
+              ? Icons.check_circle
+              : Icons.visibility,
+        ),
+        label: Text(
+          isWatched
+              ? 'Marcar como não assistido'
+              : 'Marcar como assistido',
+        ),
+      ),
+    );
+  },
+),
         ],
       ),
     );
