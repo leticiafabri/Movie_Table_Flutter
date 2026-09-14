@@ -1,32 +1,55 @@
 import 'package:flutter/foundation.dart';
+import 'auth_provider.dart';
 
 import '../models/movie.dart';
 import '../services/local_storage_service.dart';
 
 class FavoritesProvider extends ChangeNotifier {
-  final LocalStorageService _storageService = LocalStorageService();
+  final LocalStorageService _storageService =
+      LocalStorageService();
+
+  final AuthProvider _authProvider;
 
   final List<Movie> _favorites = [];
 
-  List<Movie> get favorites => List.unmodifiable(_favorites);
+  List<Movie> get favorites =>
+      List.unmodifiable(_favorites);
 
-  FavoritesProvider() {
+  FavoritesProvider(this._authProvider) {
+      _authProvider.addListener(_onAuthChanged);
     _loadFavorites();
   }
+
+void _onAuthChanged() {
+  if (_authProvider.currentUser == null) {
+    _favorites.clear();
+    notifyListeners();
+    return;
+  }
+
+  _loadFavorites();
+}
 
   bool isFavorite(int movieId) {
     return _favorites.any((movie) => movie.id == movieId);
   }
 
-  Future<void> _loadFavorites() async {
-    final savedFavorites = await _storageService.loadFavorites();
+Future<void> _loadFavorites() async {
+  final email = _authProvider.currentUser;
 
-    _favorites
-      ..clear()
-      ..addAll(savedFavorites);
-
-    notifyListeners();
+  if (email == null) {
+    return;
   }
+
+  final savedFavorites =
+      await _storageService.loadFavorites(email);
+
+  _favorites
+    ..clear()
+    ..addAll(savedFavorites);
+
+  notifyListeners();
+}
 
   Future<void> toggleFavorite(Movie movie) async {
     if (isFavorite(movie.id)) {
@@ -39,6 +62,12 @@ class FavoritesProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    await _storageService.saveFavorites(_favorites);
+    final email = _authProvider.currentUser;
+    if (email != null) {
+      await _storageService.saveFavorites(
+        email,
+        _favorites,
+      );
+    }
   }
 }

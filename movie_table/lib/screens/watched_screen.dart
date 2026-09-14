@@ -13,9 +13,6 @@ class WatchedScreen extends StatelessWidget {
     final movieService = MovieService();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Assistidos'),
-      ),
       body: Consumer<WatchedProvider>(
         builder: (context, watchedProvider, child) {
           final watched = watchedProvider.watched;

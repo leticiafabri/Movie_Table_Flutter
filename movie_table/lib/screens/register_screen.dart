@@ -1,55 +1,76 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'register_screen.dart';
+
 import '../providers/auth_provider.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
-  Future<void> _login() async {
+  Future<void> _register() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
+    final confirmPassword = _confirmPasswordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
+    if (email.isEmpty ||
+        password.isEmpty ||
+        confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Preencha e-mail e senha.'),
+          content: Text('Preencha todos os campos.'),
         ),
       );
       return;
     }
 
-    final success = await context.read<AuthProvider>().login(
-      email,
-      password,
-    );
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('As senhas não coincidem.'),
+        ),
+      );
+      return;
+    }
+
+    final created =
+        await context.read<AuthProvider>().createAccount(
+              email,
+              password,
+            );
 
     if (!mounted) return;
 
-    if (!success) {
+    if (!created) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('E-mail ou senha inválidos.'),
+          content: Text('Este e-mail já está cadastrado.'),
         ),
       );
       return;
     }
 
-    Navigator.pushReplacementNamed(context, '/catalog');
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Conta criada com sucesso!'),
+      ),
+    );
+
+    Navigator.pop(context);
   }
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
@@ -57,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Movie Table'),
+        title: const Text('Criar conta'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(24),
@@ -65,19 +86,18 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
-              Icons.movie,
+              Icons.person_add,
               size: 80,
             ),
 
             const SizedBox(height: 24),
 
             const Text(
-              'Bem-vindo ao Movie Table',
+              'Criar uma conta',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
-              textAlign: TextAlign.center,
             ),
 
             const SizedBox(height: 32),
@@ -102,28 +122,26 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
 
+            const SizedBox(height: 16),
+
+            TextField(
+              controller: _confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Confirmar senha',
+                border: OutlineInputBorder(),
+              ),
+            ),
+
             const SizedBox(height: 24),
 
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _login,
-                child: const Text('Entrar'),
+                onPressed: _register,
+                child: const Text('Criar conta'),
               ),
             ),
-            const SizedBox(height: 12),
-
-TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const RegisterScreen(),
-      ),
-    );
-  },
-  child: const Text('Criar uma conta'),
-),
           ],
         ),
       ),

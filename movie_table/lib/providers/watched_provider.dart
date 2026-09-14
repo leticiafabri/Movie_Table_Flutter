@@ -2,43 +2,73 @@ import 'package:flutter/foundation.dart';
 
 import '../models/movie.dart';
 import '../services/local_storage_service.dart';
+import 'auth_provider.dart';
 
 class WatchedProvider extends ChangeNotifier {
-  final LocalStorageService _storageService = LocalStorageService();
+  final LocalStorageService _storageService =
+      LocalStorageService();
+
+  final AuthProvider _authProvider;
 
   final List<Movie> _watched = [];
 
-  List<Movie> get watched => List.unmodifiable(_watched);
+  List<Movie> get watched =>
+      List.unmodifiable(_watched);
 
-  WatchedProvider() {
+  WatchedProvider(this._authProvider) {
+    _authProvider.addListener(_onAuthChanged);
     _loadWatched();
   }
+
+void _onAuthChanged() {
+  if (_authProvider.currentUser == null) {
+    _watched.clear();
+    notifyListeners();
+    return;
+  }
+
+  _loadWatched();
+}
 
   bool isWatched(int movieId) {
     return _watched.any((movie) => movie.id == movieId);
   }
 
-  Future<void> _loadWatched() async {
-    final savedWatched = await _storageService.loadWatched();
+Future<void> _loadWatched() async {
+  final email = _authProvider.currentUser;
 
-    _watched
-      ..clear()
-      ..addAll(savedWatched);
-
-    notifyListeners();
+  if (email == null) {
+    return;
   }
 
-  Future<void> toggleWatched(Movie movie) async {
-    if (isWatched(movie.id)) {
-      _watched.removeWhere(
-        (item) => item.id == movie.id,
-      );
-    } else {
-      _watched.add(movie);
-    }
+  final savedWatched =
+      await _storageService.loadWatched(email);
 
-    notifyListeners();
+  _watched
+    ..clear()
+    ..addAll(savedWatched);
 
-    await _storageService.saveWatched(_watched);
+  notifyListeners();
+}
+
+Future<void> toggleWatched(Movie movie) async {
+  if (isWatched(movie.id)) {
+    _watched.removeWhere(
+      (item) => item.id == movie.id,
+    );
+  } else {
+    _watched.add(movie);
   }
+
+  notifyListeners();
+
+  final email = _authProvider.currentUser;
+
+  if (email != null) {
+    await _storageService.saveWatched(
+      email,
+      _watched,
+    );
+  }
+}
 }

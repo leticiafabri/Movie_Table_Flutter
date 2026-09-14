@@ -13,9 +13,6 @@ class FavoritesScreen extends StatelessWidget {
     final movieService = MovieService();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Favoritos'),
-      ),
       body: Consumer<FavoritesProvider>(
         builder: (context, favoritesProvider, child) {
           final favorites = favoritesProvider.favorites;

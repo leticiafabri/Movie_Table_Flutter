@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/auth_provider.dart';
 
 import 'catalog_screen.dart';
 import 'favorites_screen.dart';
@@ -23,6 +26,25 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+    title: const Text('Movie Table'),
+    actions: [
+      IconButton(
+        tooltip: 'Sair',
+        icon: const Icon(Icons.logout),
+        onPressed: () async {
+          await context.read<AuthProvider>().logout();
+
+          if (!mounted) return;
+
+          Navigator.pushReplacementNamed(
+            context,
+            '/login',
+          );
+        },
+      ),
+    ],
+  ),
       body: _screens[_currentIndex],
 
       bottomNavigationBar: NavigationBar(
