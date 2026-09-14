@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../models/movie.dart';
 import '../services/movie_service.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/favorites_provider.dart';
 
 class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
@@ -51,8 +54,28 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Detalhes'),
-      ),
+  title: const Text('Detalhes'),
+  actions: [
+    Consumer<FavoritesProvider>(
+      builder: (context, favoritesProvider, child) {
+        final movie = _movie ?? widget.movie;
+        final isFavorite = favoritesProvider.isFavorite(movie.id);
+
+        return IconButton(
+          tooltip: isFavorite
+              ? 'Remover dos favoritos'
+              : 'Adicionar aos favoritos',
+          icon: Icon(
+            isFavorite ? Icons.star : Icons.star_border,
+          ),
+          onPressed: () {
+            favoritesProvider.toggleFavorite(movie);
+          },
+        );
+      },
+    ),
+  ],
+),
       body: _buildBody(),
     );
   }

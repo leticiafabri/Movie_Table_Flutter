@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'providers/favorites_provider.dart';
 import 'screens/catalog_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/movie_detail_screen.dart';
+import 'screens/favorites_screen.dart';
+
 
 void main() {
-  runApp(const MovieTableApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => FavoritesProvider(),
+      child: const MovieTableApp(),
+    ),
+  );
 }
 
 class MovieTableApp extends StatelessWidget {
@@ -21,6 +31,7 @@ class MovieTableApp extends StatelessWidget {
       routes: {
         '/login': (context) => const LoginScreen(),
         '/catalog': (context) => const CatalogScreen(),
+        '/favorites': (context) => const FavoritesScreen(),
       },
     );
   }

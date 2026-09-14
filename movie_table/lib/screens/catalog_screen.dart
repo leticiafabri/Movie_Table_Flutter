@@ -60,8 +60,17 @@ class _CatalogScreenState extends State<CatalogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Filmes'),
-      ),
+  title: const Text('Filmes'),
+  actions: [
+    IconButton(
+      tooltip: 'Favoritos',
+      icon: const Icon(Icons.star),
+      onPressed: () {
+        Navigator.pushNamed(context, '/favorites');
+      },
+    ),
+  ],
+),
       body: _buildBody(),
     );
   }
