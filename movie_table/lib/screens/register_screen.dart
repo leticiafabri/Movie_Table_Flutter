@@ -72,7 +72,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.person_add, size: 80),
+            Image.asset(
+  'assets/user_logo.png',
+  height: 100,
+  fit: BoxFit.contain,
+),
 
             const SizedBox(height: 24),
 

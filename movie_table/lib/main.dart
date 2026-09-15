@@ -9,7 +9,7 @@ import 'screens/favorites_screen.dart';
 import 'screens/watched_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/session_screen.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(
@@ -34,6 +34,19 @@ MultiProvider(
   );
 }
 
+class NoStretchScrollBehavior extends MaterialScrollBehavior {
+  const NoStretchScrollBehavior();
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return child;
+  }
+}
+
 class MovieTableApp extends StatelessWidget {
   const MovieTableApp({super.key});
 
@@ -42,7 +55,18 @@ class MovieTableApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Movie Table',
-
+          theme: ThemeData(
+          
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color(0xFF7A1F2B),
+      ),
+      textTheme: GoogleFonts.montserratTextTheme(),
+      appBarTheme: const AppBarTheme(
+        backgroundColor: Color(0xFF7A1F2B),
+        foregroundColor: Colors.white,
+      ),
+    ),
+      scrollBehavior: const NoStretchScrollBehavior(),
       initialRoute: '/session',
 
       routes: {
