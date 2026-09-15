@@ -42,56 +42,63 @@ class WatchedScreen extends StatelessWidget {
               final imageUrl =
                   movieService.getImageUrl(movie.posterPath);
 
-              return Card(
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MovieDetailScreen(movie: movie),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    crossAxisAlignment:
-                        CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: imageUrl.isNotEmpty
-                            ? Image.network(
-                                imageUrl,
-                                fit: BoxFit.cover,
-                                errorBuilder:
-                                    (context, error, stackTrace) {
-                                  return const Center(
-                                    child: Icon(
-                                      Icons.movie,
-                                      size: 50,
-                                    ),
-                                  );
-                                },
-                              )
-                            : const Center(
-                                child: Icon(
-                                  Icons.movie,
-                                  size: 50,
+              return Semantics(
+                button: true,
+                label:
+                    'Abrir detalhes do filme ${movie.title}',
+                child: Card(
+                  clipBehavior: Clip.antiAlias,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              MovieDetailScreen(movie: movie),
+                        ),
+                      );
+                    },
+                    child: Column(
+                      crossAxisAlignment:
+                          CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: imageUrl.isNotEmpty
+                              ? Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  semanticLabel:
+                                      'Pôster do filme ${movie.title}',
+                                  errorBuilder:
+                                      (context, error, stackTrace) {
+                                    return const Center(
+                                      child: Icon(
+                                        Icons.movie,
+                                        size: 50,
+                                      ),
+                                    );
+                                  },
+                                )
+                              : const Center(
+                                  child: Icon(
+                                    Icons.movie,
+                                    size: 50,
+                                  ),
                                 ),
-                              ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          movie.title,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Text(
+                            movie.title,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               );

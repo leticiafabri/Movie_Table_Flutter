@@ -15,7 +15,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
   final MovieService _movieService = MovieService();
 
   final TextEditingController _searchController =
-    TextEditingController();
+      TextEditingController();
 
   final List<Movie> _movies = [];
 
@@ -59,47 +59,48 @@ class _CatalogScreenState extends State<CatalogScreen> {
     _currentPage++;
     await _loadMovies();
   }
+
   Future<void> _searchMovies() async {
-  final query = _searchController.text.trim();
+    final query = _searchController.text.trim();
 
-  if (query.isEmpty) {
-    return;
-  }
-
-  setState(() {
-  _isLoading = true;
-  _isSearching = true;
-  _errorMessage = null;
-  });
-
-  try {
-    final movies = await _movieService.searchMovies(query);
+    if (query.isEmpty) {
+      return;
+    }
 
     setState(() {
-      _movies
-        ..clear()
-        ..addAll(movies);
-      _isLoading = false;
+      _isLoading = true;
+      _isSearching = true;
+      _errorMessage = null;
     });
-  } catch (e) {
-    setState(() {
-      _isLoading = false;
-      _errorMessage = 'Não foi possível realizar a busca.';
-    });
+
+    try {
+      final movies = await _movieService.searchMovies(query);
+
+      setState(() {
+        _movies
+          ..clear()
+          ..addAll(movies);
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Não foi possível realizar a busca.';
+      });
+    }
   }
-}
 
-Future<void> _clearSearch() async {
-  _searchController.clear();
+  Future<void> _clearSearch() async {
+    _searchController.clear();
 
-  setState(() {
-    _isSearching = false;
-    _currentPage = 1;
-    _movies.clear();
-  });
+    setState(() {
+      _isSearching = false;
+      _currentPage = 1;
+      _movies.clear();
+    });
 
-  await _loadMovies();
-}
+    await _loadMovies();
+  }
 
   @override
   void dispose() {
@@ -137,83 +138,83 @@ Future<void> _clearSearch() async {
       );
     }
 
-return Column(
-  children: [
-    Padding(
-      padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Buscar filme',
-                hintText: 'Digite o nome de um filme',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    labelText: 'Buscar filme',
+                    hintText: 'Digite o nome de um filme',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                onPressed: _isLoading
+                    ? null
+                    : (_isSearching
+                        ? _clearSearch
+                        : _searchMovies),
+                child: Text(
+                  _isSearching ? 'Limpar' : 'Buscar',
+                ),
+              ),
+            ],
+          ),
+        ),
+        Expanded(
+          child: _movies.isEmpty
+              ? const Center(
+                  child: Text(
+                    'Nenhum filme encontrado.',
+                    style: TextStyle(
+                      fontSize: 18,
+                    ),
+                  ),
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.all(12),
+                  gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.62,
+                  ),
+                  itemCount: _movies.length,
+                  itemBuilder: (context, index) {
+                    final movie = _movies[index];
+
+                    return _buildMovieCard(movie);
+                  },
+                ),
+        ),
+        if (!_isSearching)
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _isLoading ? null : _loadNextPage,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Text('Carregar Mais'),
               ),
             ),
           ),
-          const SizedBox(width: 8),
-ElevatedButton(
-  onPressed: _isLoading
-      ? null
-      : (_isSearching ? _clearSearch : _searchMovies),
-  child: Text(
-    _isSearching ? 'Limpar' : 'Buscar',
-  ),
-),
-        ],
-      ),
-    ),
-
-Expanded(
-  child: _movies.isEmpty
-      ? const Center(
-          child: Text(
-            'Nenhum filme encontrado.',
-            style: TextStyle(
-              fontSize: 18,
-            ),
-          ),
-        )
-      : GridView.builder(
-          padding: const EdgeInsets.all(12),
-          gridDelegate:
-              const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.62,
-          ),
-          itemCount: _movies.length,
-          itemBuilder: (context, index) {
-            final movie = _movies[index];
-
-            return _buildMovieCard(movie);
-          },
-        ),
-),
-
-        if (!_isSearching)
-  Padding(
-    padding: const EdgeInsets.all(12),
-    child: SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _loadNextPage,
-        child: _isLoading
-            ? const SizedBox(
-                height: 20,
-                width: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                ),
-              )
-            : const Text('Carregar Mais'),
-      ),
-    ),
-  ),
       ],
     );
   }
@@ -223,55 +224,62 @@ Expanded(
       movie.posterPath,
     );
 
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) => MovieDetailScreen(
-        movie: movie,
-      ),
-    ),
-  );
-},
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: imageUrl.isNotEmpty
-                  ? Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return const Center(
-                          child: Icon(
-                            Icons.movie,
-                            size: 50,
-                          ),
-                        );
-                      },
-                    )
-                  : const Center(
-                      child: Icon(
-                        Icons.movie,
-                        size: 50,
-                      ),
-                    ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                movie.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
+    return Semantics(
+      button: true,
+      label: 'Abrir detalhes do filme ${movie.title}',
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MovieDetailScreen(
+                  movie: movie,
                 ),
               ),
-            ),
-          ],
+            );
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: imageUrl.isNotEmpty
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover,
+                        semanticLabel:
+                            'Pôster do filme ${movie.title}',
+                        errorBuilder:
+                            (context, error, stackTrace) {
+                          return const Center(
+                            child: Icon(
+                              Icons.movie,
+                              size: 50,
+                            ),
+                          );
+                        },
+                      )
+                    : const Center(
+                        child: Icon(
+                          Icons.movie,
+                          size: 50,
+                        ),
+                      ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(
+                  movie.title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

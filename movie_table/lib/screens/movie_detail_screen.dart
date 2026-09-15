@@ -134,6 +134,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   imageUrl,
                   height: 450,
                   fit: BoxFit.cover,
+                  semanticLabel: 'Pôster do filme ${movie.title}',
                   errorBuilder: (
                     context,
                     error,
@@ -175,19 +176,24 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
           const SizedBox(height: 16),
 
-          Row(
-            children: [
-              const Icon(Icons.star),
-              const SizedBox(width: 6),
-              Text(
-                movie.voteAverage.toStringAsFixed(1),
-              ),
-              const SizedBox(width: 16),
-              Text(
-                '${movie.voteCount} votos',
-              ),
-            ],
-          ),
+Semantics(
+  label:
+      'Avaliação: ${movie.voteAverage.toStringAsFixed(1)}, '
+      '${movie.voteCount} votos',
+  child: Row(
+    children: [
+      const Icon(Icons.star),
+      const SizedBox(width: 6),
+      Text(
+        movie.voteAverage.toStringAsFixed(1),
+      ),
+      const SizedBox(width: 16),
+      Text(
+        '${movie.voteCount} votos',
+      ),
+    ],
+  ),
+),
 
           const SizedBox(height: 16),
 
