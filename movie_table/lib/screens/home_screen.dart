@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
               await authProvider.logout();
 
-              if (!mounted) return;
+              if (!context.mounted) return;
 
               Navigator.pushReplacementNamed(context, '/login');
             },
