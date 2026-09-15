@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../models/movie.dart';
 import '../services/movie_service.dart';
+
 import 'package:provider/provider.dart';
 
 import '../providers/favorites_provider.dart';
@@ -10,10 +11,7 @@ import '../providers/watched_provider.dart';
 class MovieDetailScreen extends StatefulWidget {
   final Movie movie;
 
-  const MovieDetailScreen({
-    super.key,
-    required this.movie,
-  });
+  const MovieDetailScreen({super.key, required this.movie});
 
   @override
   State<MovieDetailScreen> createState() => _MovieDetailScreenState();
@@ -34,9 +32,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
   Future<void> _loadDetails() async {
     try {
-      final movie = await _movieService.getMovieDetails(
-        widget.movie.id,
-      );
+      final movie = await _movieService.getMovieDetails(widget.movie.id);
 
       setState(() {
         _movie = movie;
@@ -45,8 +41,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage =
-            'Não foi possível carregar os detalhes do filme.';
+        _errorMessage = 'Não foi possível carregar os detalhes do filme.';
       });
     }
   }
@@ -55,37 +50,33 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-  title: const Text('Detalhes'),
-  actions: [
-    Consumer<FavoritesProvider>(
-      builder: (context, favoritesProvider, child) {
-        final movie = _movie ?? widget.movie;
-        final isFavorite = favoritesProvider.isFavorite(movie.id);
+        title: const Text('Detalhes'),
+        actions: [
+          Consumer<FavoritesProvider>(
+            builder: (context, favoritesProvider, child) {
+              final movie = _movie ?? widget.movie;
+              final isFavorite = favoritesProvider.isFavorite(movie.id);
 
-        return IconButton(
-          tooltip: isFavorite
-              ? 'Remover dos favoritos'
-              : 'Adicionar aos favoritos',
-          icon: Icon(
-            isFavorite ? Icons.star : Icons.star_border,
+              return IconButton(
+                tooltip: isFavorite
+                    ? 'Remover dos favoritos'
+                    : 'Adicionar aos favoritos',
+                icon: Icon(isFavorite ? Icons.star : Icons.star_border),
+                onPressed: () {
+                  favoritesProvider.toggleFavorite(movie);
+                },
+              );
+            },
           ),
-          onPressed: () {
-            favoritesProvider.toggleFavorite(movie);
-          },
-        );
-      },
-    ),
-  ],
-),
+        ],
+      ),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null) {
@@ -95,15 +86,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(
-                Icons.error_outline,
-                size: 60,
-              ),
+              const Icon(Icons.error_outline, size: 60),
               const SizedBox(height: 16),
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-              ),
+              Text(_errorMessage!, textAlign: TextAlign.center),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadDetails,
@@ -117,9 +102,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
 
     final movie = _movie!;
 
-    final imageUrl = _movieService.getImageUrl(
-      movie.posterPath,
-    );
+    final imageUrl = _movieService.getImageUrl(movie.posterPath);
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -135,19 +118,10 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
                   height: 450,
                   fit: BoxFit.cover,
                   semanticLabel: 'Pôster do filme ${movie.title}',
-                  errorBuilder: (
-                    context,
-                    error,
-                    stackTrace,
-                  ) {
+                  errorBuilder: (context, error, stackTrace) {
                     return const SizedBox(
                       height: 450,
-                      child: Center(
-                        child: Icon(
-                          Icons.movie,
-                          size: 80,
-                        ),
-                      ),
+                      child: Center(child: Icon(Icons.movie, size: 80)),
                     );
                   },
                 ),
@@ -156,64 +130,46 @@ class _MovieDetailScreenState extends State<MovieDetailScreen> {
           else
             const SizedBox(
               height: 300,
-              child: Center(
-                child: Icon(
-                  Icons.movie,
-                  size: 80,
-                ),
-              ),
+              child: Center(child: Icon(Icons.movie, size: 80)),
             ),
 
           const SizedBox(height: 24),
 
           Text(
             movie.title,
-            style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
+            style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+
+          const SizedBox(height: 16),
+
+          Semantics(
+            label:
+                'Avaliação: ${movie.voteAverage.toStringAsFixed(1)}, '
+                '${movie.voteCount} votos',
+            child: Row(
+              children: [
+                const Icon(Icons.star),
+                const SizedBox(width: 6),
+                Text(movie.voteAverage.toStringAsFixed(1)),
+                const SizedBox(width: 16),
+                Text('${movie.voteCount} votos'),
+              ],
             ),
           ),
 
           const SizedBox(height: 16),
 
-Semantics(
-  label:
-      'Avaliação: ${movie.voteAverage.toStringAsFixed(1)}, '
-      '${movie.voteCount} votos',
-  child: Row(
-    children: [
-      const Icon(Icons.star),
-      const SizedBox(width: 6),
-      Text(
-        movie.voteAverage.toStringAsFixed(1),
-      ),
-      const SizedBox(width: 16),
-      Text(
-        '${movie.voteCount} votos',
-      ),
-    ],
-  ),
-),
-
-          const SizedBox(height: 16),
-
-          if (movie.releaseDate != null &&
-              movie.releaseDate!.isNotEmpty)
+          if (movie.releaseDate != null && movie.releaseDate!.isNotEmpty)
             Text(
               'Lançamento: ${movie.releaseDate}',
-              style: const TextStyle(
-                fontSize: 16,
-              ),
+              style: const TextStyle(fontSize: 16),
             ),
 
           const SizedBox(height: 24),
 
           const Text(
             'Sinopse',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
 
           const SizedBox(height: 8),
@@ -222,37 +178,30 @@ Semantics(
             movie.overview?.isNotEmpty == true
                 ? movie.overview!
                 : 'Sinopse não disponível.',
-            style: const TextStyle(
-              fontSize: 16,
-              height: 1.5,
-            ),
+            style: const TextStyle(fontSize: 16, height: 1.5),
           ),
           const SizedBox(height: 24),
 
-Consumer<WatchedProvider>(
-  builder: (context, watchedProvider, child) {
-    final isWatched = watchedProvider.isWatched(movie.id);
+          Consumer<WatchedProvider>(
+            builder: (context, watchedProvider, child) {
+              final isWatched = watchedProvider.isWatched(movie.id);
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: () {
-          watchedProvider.toggleWatched(movie);
-        },
-        icon: Icon(
-          isWatched
-              ? Icons.check_circle
-              : Icons.visibility,
-        ),
-        label: Text(
-          isWatched
-              ? 'Marcar como não assistido'
-              : 'Marcar como assistido',
-        ),
-      ),
-    );
-  },
-),
+              return SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    watchedProvider.toggleWatched(movie);
+                  },
+                  icon: Icon(isWatched ? Icons.check_circle : Icons.visibility),
+                  label: Text(
+                    isWatched
+                        ? 'Marcar como não assistido'
+                        : 'Marcar como assistido',
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

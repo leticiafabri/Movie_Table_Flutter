@@ -8,15 +8,11 @@ class MovieService {
   static const String _baseUrl = 'https://api.themoviedb.org/3';
 
   // Vamos preencher isso depois usando o token
-  static const String _token = String.fromEnvironment(
-    'TMDB_ACCESS_TOKEN',
-  );
+  static const String _token = String.fromEnvironment('TMDB_ACCESS_TOKEN');
 
   Future<List<Movie>> getMovies({int page = 1}) async {
     final response = await http.get(
-      Uri.parse(
-        '$_baseUrl/discover/movie?page=$page&sort_by=popularity.desc',
-      ),
+      Uri.parse('$_baseUrl/discover/movie?page=$page&sort_by=popularity.desc'),
       headers: {
         'Authorization': 'Bearer $_token',
         'Content-Type': 'application/json',
@@ -28,9 +24,7 @@ class MovieService {
 
       final List results = data['results'];
 
-      return results
-          .map((movie) => Movie.fromJson(movie))
-          .toList();
+      return results.map((movie) => Movie.fromJson(movie)).toList();
     }
 
     throw Exception(
@@ -55,9 +49,7 @@ class MovieService {
 
       final List results = data['results'];
 
-      return results
-          .map((movie) => Movie.fromJson(movie))
-          .toList();
+      return results.map((movie) => Movie.fromJson(movie)).toList();
     }
 
     throw Exception(

@@ -14,8 +14,7 @@ class CatalogScreen extends StatefulWidget {
 class _CatalogScreenState extends State<CatalogScreen> {
   final MovieService _movieService = MovieService();
 
-  final TextEditingController _searchController =
-      TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   final List<Movie> _movies = [];
 
@@ -39,9 +38,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     });
 
     try {
-      final movies = await _movieService.getMovies(
-        page: _currentPage,
-      );
+      final movies = await _movieService.getMovies(page: _currentPage);
 
       setState(() {
         _movies.addAll(movies);
@@ -110,16 +107,12 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _buildBody(),
-    );
+    return Scaffold(body: _buildBody());
   }
 
   Widget _buildBody() {
     if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
     if (_errorMessage != null && _movies.isEmpty) {
@@ -159,12 +152,8 @@ class _CatalogScreenState extends State<CatalogScreen> {
               ElevatedButton(
                 onPressed: _isLoading
                     ? null
-                    : (_isSearching
-                        ? _clearSearch
-                        : _searchMovies),
-                child: Text(
-                  _isSearching ? 'Limpar' : 'Buscar',
-                ),
+                    : (_isSearching ? _clearSearch : _searchMovies),
+                child: Text(_isSearching ? 'Limpar' : 'Buscar'),
               ),
             ],
           ),
@@ -174,15 +163,12 @@ class _CatalogScreenState extends State<CatalogScreen> {
               ? const Center(
                   child: Text(
                     'Nenhum filme encontrado.',
-                    style: TextStyle(
-                      fontSize: 18,
-                    ),
+                    style: TextStyle(fontSize: 18),
                   ),
                 )
               : GridView.builder(
                   padding: const EdgeInsets.all(12),
-                  gridDelegate:
-                      const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 12,
                     mainAxisSpacing: 16,
@@ -207,9 +193,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Text('Carregar Mais'),
               ),
@@ -220,9 +204,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
   }
 
   Widget _buildMovieCard(Movie movie) {
-    final imageUrl = _movieService.getImageUrl(
-      movie.posterPath,
-    );
+    final imageUrl = _movieService.getImageUrl(movie.posterPath);
 
     return Semantics(
       button: true,
@@ -234,9 +216,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => MovieDetailScreen(
-                  movie: movie,
-                ),
+                builder: (context) => MovieDetailScreen(movie: movie),
               ),
             );
           },
@@ -248,24 +228,14 @@ class _CatalogScreenState extends State<CatalogScreen> {
                     ? Image.network(
                         imageUrl,
                         fit: BoxFit.cover,
-                        semanticLabel:
-                            'Pôster do filme ${movie.title}',
-                        errorBuilder:
-                            (context, error, stackTrace) {
+                        semanticLabel: 'Pôster do filme ${movie.title}',
+                        errorBuilder: (context, error, stackTrace) {
                           return const Center(
-                            child: Icon(
-                              Icons.movie,
-                              size: 50,
-                            ),
+                            child: Icon(Icons.movie, size: 50),
                           );
                         },
                       )
-                    : const Center(
-                        child: Icon(
-                          Icons.movie,
-                          size: 50,
-                        ),
-                      ),
+                    : const Center(child: Icon(Icons.movie, size: 50)),
               ),
               Padding(
                 padding: const EdgeInsets.all(8),
@@ -273,9 +243,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
                   movie.title,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             ],

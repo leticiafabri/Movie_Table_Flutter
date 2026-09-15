@@ -28,8 +28,7 @@ class WatchedScreen extends StatelessWidget {
 
           return GridView.builder(
             padding: const EdgeInsets.all(12),
-            gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               crossAxisSpacing: 12,
               mainAxisSpacing: 16,
@@ -39,13 +38,11 @@ class WatchedScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final movie = watched[index];
 
-              final imageUrl =
-                  movieService.getImageUrl(movie.posterPath);
+              final imageUrl = movieService.getImageUrl(movie.posterPath);
 
               return Semantics(
                 button: true,
-                label:
-                    'Abrir detalhes do filme ${movie.title}',
+                label: 'Abrir detalhes do filme ${movie.title}',
                 child: Card(
                   clipBehavior: Clip.antiAlias,
                   child: InkWell(
@@ -53,14 +50,12 @@ class WatchedScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              MovieDetailScreen(movie: movie),
+                          builder: (context) => MovieDetailScreen(movie: movie),
                         ),
                       );
                     },
                     child: Column(
-                      crossAxisAlignment:
-                          CrossAxisAlignment.stretch,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
                           child: imageUrl.isNotEmpty
@@ -69,21 +64,14 @@ class WatchedScreen extends StatelessWidget {
                                   fit: BoxFit.cover,
                                   semanticLabel:
                                       'Pôster do filme ${movie.title}',
-                                  errorBuilder:
-                                      (context, error, stackTrace) {
+                                  errorBuilder: (context, error, stackTrace) {
                                     return const Center(
-                                      child: Icon(
-                                        Icons.movie,
-                                        size: 50,
-                                      ),
+                                      child: Icon(Icons.movie, size: 50),
                                     );
                                   },
                                 )
                               : const Center(
-                                  child: Icon(
-                                    Icons.movie,
-                                    size: 50,
-                                  ),
+                                  child: Icon(Icons.movie, size: 50),
                                 ),
                         ),
                         Padding(
@@ -92,9 +80,7 @@ class WatchedScreen extends StatelessWidget {
                             movie.title,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],

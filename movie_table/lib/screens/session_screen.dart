@@ -22,8 +22,7 @@ class _SessionScreenState extends State<SessionScreen> {
 
     if (!mounted) return;
 
-    final isLoggedIn =
-        context.read<AuthProvider>().isLoggedIn;
+    final isLoggedIn = context.read<AuthProvider>().isLoggedIn;
 
     if (isLoggedIn) {
       Navigator.pushReplacementNamed(context, '/catalog');
@@ -34,10 +33,6 @@ class _SessionScreenState extends State<SessionScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+    return const Scaffold(body: Center(child: CircularProgressIndicator()));
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'register_screen.dart';
 import '../providers/auth_provider.dart';
 
@@ -13,32 +14,32 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  bool _isLoading = false;
 
   Future<void> _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha e-mail e senha.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha e-mail e senha.')));
       return;
     }
+    setState(() {
+      _isLoading = true;
+    });
 
-    final success = await context.read<AuthProvider>().login(
-      email,
-      password,
-    );
+    final success = await context.read<AuthProvider>().login(email, password);
 
     if (!mounted) return;
 
     if (!success) {
+      setState(() {
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('E-mail ou senha inválidos.'),
-        ),
+        const SnackBar(content: Text('E-mail ou senha inválidos.')),
       );
       return;
     }
@@ -56,27 +57,19 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Movie Table'),
-      ),
-body: SingleChildScrollView(
-  padding: const EdgeInsets.all(24),
-  child: Column(
+      appBar: AppBar(title: const Text('Movie Table')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.movie,
-              size: 80,
-            ),
+            const Icon(Icons.movie, size: 80),
 
             const SizedBox(height: 24),
 
             const Text(
               'Bem-vindo ao Movie Table',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
 
@@ -107,23 +100,29 @@ body: SingleChildScrollView(
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _login,
-                child: const Text('Entrar'),
+                onPressed: _isLoading ? null : _login,
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Entrar'),
               ),
             ),
             const SizedBox(height: 12),
 
-TextButton(
-  onPressed: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const RegisterScreen(),
-      ),
-    );
-  },
-  child: const Text('Criar uma conta'),
-),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
+                );
+              },
+              child: const Text('Criar uma conta'),
+            ),
           ],
         ),
       ),

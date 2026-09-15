@@ -4,8 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/local_storage_service.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final LocalStorageService _storageService =
-      LocalStorageService();
+  final LocalStorageService _storageService = LocalStorageService();
 
   bool _isLoggedIn = false;
   String? _currentUser;
@@ -23,26 +22,14 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> createAccount(
-    String email,
-    String password,
-  ) async {
-    final created = await _storageService.createUser(
-      email,
-      password,
-    );
+  Future<bool> createAccount(String email, String password) async {
+    final created = await _storageService.createUser(email, password);
 
     return created;
   }
 
-  Future<bool> login(
-    String email,
-    String password,
-  ) async {
-    final isValid = await _storageService.validateUser(
-      email,
-      password,
-    );
+  Future<bool> login(String email, String password) async {
+    final isValid = await _storageService.validateUser(email, password);
 
     if (!isValid) {
       return false;

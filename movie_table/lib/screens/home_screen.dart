@@ -26,25 +26,24 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-    title: const Text('Movie Table'),
-    actions: [
-      IconButton(
-        tooltip: 'Sair',
-        icon: const Icon(Icons.logout),
-        onPressed: () async {
-          await context.read<AuthProvider>().logout();
+      appBar: AppBar(
+        title: const Text('Movie Table'),
+        actions: [
+          IconButton(
+            tooltip: 'Sair',
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              final authProvider = context.read<AuthProvider>();
 
-          if (!mounted) return;
+              await authProvider.logout();
 
-          Navigator.pushReplacementNamed(
-            context,
-            '/login',
-          );
-        },
+              if (!mounted) return;
+
+              Navigator.pushReplacementNamed(context, '/login');
+            },
+          ),
+        ],
       ),
-    ],
-  ),
       body: _screens[_currentIndex],
 
       bottomNavigationBar: NavigationBar(

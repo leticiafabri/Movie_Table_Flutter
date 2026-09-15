@@ -20,48 +20,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
     final password = _passwordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
-    if (email.isEmpty ||
-        password.isEmpty ||
-        confirmPassword.isEmpty) {
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Preencha todos os campos.'),
-        ),
+        const SnackBar(content: Text('Preencha todos os campos.')),
       );
       return;
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('As senhas não coincidem.'),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('As senhas não coincidem.')));
       return;
     }
 
-    final created =
-        await context.read<AuthProvider>().createAccount(
-              email,
-              password,
-            );
+    final created = await context.read<AuthProvider>().createAccount(
+      email,
+      password,
+    );
 
     if (!mounted) return;
 
     if (!created) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Este e-mail já está cadastrado.'),
-        ),
+        const SnackBar(content: Text('Este e-mail já está cadastrado.')),
       );
       return;
     }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Conta criada com sucesso!'),
-      ),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Conta criada com sucesso!')));
 
     Navigator.pop(context);
   }
@@ -77,27 +66,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Criar conta'),
-      ),
-body: SingleChildScrollView(
-  padding: const EdgeInsets.all(24),
-  child: Column(
+      appBar: AppBar(title: const Text('Criar conta')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.person_add,
-              size: 80,
-            ),
+            const Icon(Icons.person_add, size: 80),
 
             const SizedBox(height: 24),
 
             const Text(
               'Criar uma conta',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
 
             const SizedBox(height: 32),
