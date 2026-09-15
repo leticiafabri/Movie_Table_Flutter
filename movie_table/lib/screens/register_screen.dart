@@ -80,9 +80,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: const Text('Criar conta'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+body: SingleChildScrollView(
+  padding: const EdgeInsets.all(24),
+  child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(

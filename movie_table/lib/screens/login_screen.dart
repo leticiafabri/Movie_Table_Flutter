@@ -59,9 +59,9 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: const Text('Movie Table'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+body: SingleChildScrollView(
+  padding: const EdgeInsets.all(24),
+  child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Icon(
