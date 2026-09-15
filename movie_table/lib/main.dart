@@ -1,32 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'providers/watched_provider.dart';
 import 'providers/auth_provider.dart';
 
 import 'providers/favorites_provider.dart';
-import 'screens/catalog_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/movie_detail_screen.dart';
 import 'screens/favorites_screen.dart';
 import 'screens/watched_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/session_screen.dart';
 
+
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(
-          create: (context) => FavoritesProvider(context.read<AuthProvider>()),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => WatchedProvider(context.read<AuthProvider>()),
-        ),
-      ],
-      child: const MovieTableApp(),
+MultiProvider(
+  providers: [
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(),
     ),
+    ChangeNotifierProvider(
+      create: (context) => FavoritesProvider(
+        context.read<AuthProvider>(),
+      ),
+    ),
+    ChangeNotifierProvider(
+      create: (context) => WatchedProvider(
+        context.read<AuthProvider>(),
+      ),
+    ),
+  ],
+  child: const MovieTableApp(),
+),
   );
 }
 
